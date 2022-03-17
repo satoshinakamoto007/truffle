@@ -1346,7 +1346,8 @@ export function getEventAllocations(
   contracts: ContractAllocationInfo[],
   referenceDeclarations: { [compilationId: string]: Ast.AstNodes },
   userDefinedTypes: Format.Types.TypesById,
-  abiAllocations: AbiAllocations
+  abiAllocations: AbiAllocations,
+  allowConstructorEvents: boolean = false
 ): EventAllocations {
   //first: do allocations for individual contracts
   let individualAllocations: {
@@ -1540,7 +1541,14 @@ export function getEventAllocations(
             contextHash
           ].push(allocation);
           //...and push it in the swapped context too if that exists
-          if (contextHash in contextSwapMap) {
+          //HACK: don't do this for libraries! library events are already
+          //considered always in play, so including them *twice* would cause
+          //problems... fortunately library constructors don't emit events!
+          if (
+            allowConstructorEvents &&
+            contextHash in contextSwapMap &&
+            contractKind !== "library"
+          ) {
             const swappedHash = contextSwapMap[contextHash];
             if (
               allocations[topics].bySelector[selector][contractKind][
@@ -1567,7 +1575,12 @@ export function getEventAllocations(
             allocation
           );
           //...and push it in the swapped context too if that exists
-          if (contextHash in contextSwapMap) {
+          //(and it's not a library, see above)
+          if (
+            allowConstructorEvents &&
+            contextHash in contextSwapMap &&
+            contractKind !== "library"
+          ) {
             const swappedHash = contextSwapMap[contextHash];
             if (
               allocations[topics].anonymous[contractKind][swappedHash] ===
