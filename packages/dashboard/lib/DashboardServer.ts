@@ -1,16 +1,15 @@
 import express, { Application, NextFunction, Request, Response } from "express";
-import WebSocket from "isomorphic-ws";
 import path from "path";
 import getPort from "get-port";
 import open from "open";
 import {
-  base64ToJson,
-  connectToMessageBusWithRetries,
-  createMessage,
-  DashboardMessageBus,
+  dashboardProviderMessageType,
   LogMessage,
-  sendAndAwait
-} from "@truffle/dashboard-message-bus";
+  logMessageType
+} from "@truffle/dashboard-message-bus-common";
+
+import { DashboardMessageBus } from "@truffle/dashboard-message-bus";
+import { DashboardMessageBusClient } from "@truffle/dashboard-message-bus-client";
 import cors from "cors";
 import type { Server } from "http";
 import debugModule from "debug";
@@ -43,7 +42,7 @@ export class DashboardServer {
   private expressApp?: Application;
   private httpServer?: Server;
   private messageBus?: DashboardMessageBus;
-  private socket?: WebSocket;
+  private client?: DashboardMessageBusClient;
 
   boundTerminateListener: () => void;
 
@@ -77,7 +76,7 @@ export class DashboardServer {
     this.expressApp.get("/ports", this.getPorts.bind(this));
 
     if (this.rpc) {
-      this.socket = await this.connectToMessageBus();
+      await this.connectToMessageBus();
       this.expressApp.post("/rpc", this.postRpc.bind(this));
     }
 
@@ -94,11 +93,13 @@ export class DashboardServer {
 
   async stop() {
     this.messageBus?.off("terminate", this.boundTerminateListener);
-    await this.messageBus?.terminate();
-    this.socket?.terminate();
-    return new Promise<void>(resolve => {
-      this.httpServer?.close(() => resolve());
-    });
+    return Promise.all([
+      this.client?.close(),
+      this.messageBus?.terminate(),
+      new Promise<void>(resolve => {
+        this.httpServer?.close(() => resolve());
+      })
+    ]);
   }
 
   private getPorts(req: Request, res: Response) {
@@ -114,13 +115,14 @@ export class DashboardServer {
   }
 
   private postRpc(req: Request, res: Response, next: NextFunction) {
-    if (!this.socket) {
+    if (!this.client) {
       throw new Error("Not connected to message bus");
     }
 
-    const message = createMessage("provider", req.body);
-    sendAndAwait(this.socket, message)
-      .then(response => res.json(response.payload))
+    this.client
+      .publish({ type: dashboardProviderMessageType, payload: req.body })
+      .then(lifecycle => lifecycle.response)
+      .then(response => res.json(response?.payload))
       .catch(next);
   }
 
@@ -144,27 +146,35 @@ export class DashboardServer {
       throw new Error("Message bus has not been started yet");
     }
 
-    const socket = await connectToMessageBusWithRetries(
-      this.messageBus.publishPort,
-      this.host
-    );
+    if (this.client) {
+      return;
+    }
 
-    if (this.verbose) {
-      socket.addEventListener("message", (event: WebSocket.MessageEvent) => {
-        if (typeof event.data !== "string") {
-          event.data = event.data.toString();
-        }
+    this.client = new DashboardMessageBusClient({
+      host: this.host,
+      subscribePort: this.messageBus.subscribePort,
+      publishPort: this.messageBus.publishPort
+    });
 
-        const message = base64ToJson(event.data);
-        if (message.type === "log") {
-          const logMessage = message as LogMessage;
+    await this.client.ready();
+
+    // the promise returned by `setupVerboseLogging` never resolves, so don't
+    // bother awaiting it.
+    this.setupVerboseLogging();
+  }
+
+  private async setupVerboseLogging(): Promise<void> {
+    if (this.verbose && this.client) {
+      for await (const lifecycle of this.client.subscribe({
+        type: logMessageType
+      })) {
+        if (lifecycle.message.type === "log") {
+          const logMessage = lifecycle.message as LogMessage;
           const debug = debugModule(logMessage.payload.namespace);
           debug.enabled = true;
           debug(logMessage.payload.message);
         }
-      });
+      }
     }
-
-    return socket;
   }
 }

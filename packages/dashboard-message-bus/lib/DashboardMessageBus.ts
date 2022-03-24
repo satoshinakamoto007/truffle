@@ -3,10 +3,13 @@ import delay from "delay";
 import { EventEmitter } from "events";
 import {
   base64ToJson,
+  createMessage,
+  jsonToBase64
+} from "@truffle/dashboard-message-bus-common";
+
+import {
   broadcastAndAwaitFirst,
   broadcastAndDisregard,
-  createMessage,
-  jsonToBase64,
   startWebSocketServer
 } from "./utils";
 import { promisify } from "util";
