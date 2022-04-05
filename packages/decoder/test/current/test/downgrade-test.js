@@ -31,6 +31,10 @@ describe("Graceful degradation when information is missing", function () {
     accounts = await web3.eth.getAccounts();
   });
 
+  after(async function () {
+    provider = global.__provider = null;
+  });
+
   before("Prepare contracts and artifacts", async function () {
     this.timeout(30000);
 

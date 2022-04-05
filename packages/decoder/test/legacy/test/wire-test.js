@@ -25,6 +25,10 @@ describe("Over-the-wire decoding (legacy features)", function () {
     web3 = new Web3(provider);
   });
 
+  after(async function () {
+    provider = global.__provider = null;
+  });
+
   before("Prepare contracts and artifacts", async function () {
     this.timeout(30000);
 

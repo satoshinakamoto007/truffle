@@ -21,6 +21,10 @@ describe("State variable decoding", function () {
     });
   });
 
+  after(async function () {
+    global.__provider = provider = null;
+  });
+
   before("Prepare contracts and artifacts", async function () {
     this.timeout(50000);
 

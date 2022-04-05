@@ -20,6 +20,10 @@ describe("Shadowed storage variables", function () {
     });
   });
 
+  after(async function () {
+    provider = global.__provider = null;
+  });
+
   before("Prepare contracts and artifacts", async function () {
     this.timeout(30000);
 
