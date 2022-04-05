@@ -4,6 +4,19 @@ const { createInterfaceAdapter } = require("@truffle/interface-adapter");
 const wrapper = require("./wrapper");
 const DEFAULT_NETWORK_CHECK_TIMEOUT = 5000;
 
+global.__provider = global.__provider || null;
+
+const memoProvider = function (ctx, fn) {
+  return function (...args) {
+    if (!global.__provider) {
+      console.log(new Error("creating provider memo").stack);
+      // console.log("creating provider memo");
+      global.__provider = fn.call(ctx, ...args);
+    }
+    return global.__provider;
+  };
+};
+
 module.exports = {
   wrap: function (provider, options) {
     return wrapper.wrap(provider, options);
@@ -49,17 +62,18 @@ module.exports = {
     return new Promise((resolve, reject) => {
       const noResponseFromNetworkCall = setTimeout(() => {
         let errorMessage =
-          "There was a timeout while attempting to connect to the network at " + host +
+          "There was a timeout while attempting to connect to the network at " +
+          host +
           ".\n       Check to see that your provider is valid." +
           "\n       If you have a slow internet connection, try configuring a longer " +
           "timeout in your Truffle config. Use the " +
           "networks[networkName].networkCheckTimeout property to do this.";
 
-          if (network === "dashboard") {
-            errorMessage +=
-              "\n       Also make sure that your Truffle Dashboard browser " +
-              "tab is open and connected to MetaMask.";
-          }
+        if (network === "dashboard") {
+          errorMessage +=
+            "\n       Also make sure that your Truffle Dashboard browser " +
+            "tab is open and connected to MetaMask.";
+        }
 
         throw new Error(errorMessage);
       }, networkCheckTimeout);
@@ -75,7 +89,9 @@ module.exports = {
           } catch (error) {
             console.log(
               "> Something went wrong while attempting to connect to the " +
-                "network at " + host + ". Check your network configuration."
+                "network at " +
+                host +
+                ". Check your network configuration."
             );
             clearTimeout(noResponseFromNetworkCall);
             clearTimeout(networkCheck);
@@ -86,5 +102,11 @@ module.exports = {
         }, networkCheckDelay);
       })();
     });
-  },
+  }
 };
+
+module.exports.create = memoProvider(module.exports, module.exports.create);
+module.exports.getProvider = memoProvider(
+  module.exports,
+  module.exports.getProvider
+);
