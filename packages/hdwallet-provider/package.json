@@ -16,8 +16,9 @@
   "main": "dist/index.js",
   "scripts": {
     "build": "tsc",
-    "prepare": "yarn build",
-    "test": "yarn build && mocha --exit -r ts-node/register test/**/*.test.ts"
+    "prepare": "yarn run snyk-protect && yarn build",
+    "test": "yarn build && mocha --exit -r ts-node/register test/**/*.test.ts",
+    "snyk-protect": "snyk-protect"
   },
   "types": "dist/index.d.ts",
   "dependencies": {
@@ -28,7 +29,8 @@
     "ethereum-protocol": "^1.0.1",
     "ethereumjs-util": "^6.1.0",
     "ethereumjs-wallet": "^1.0.1",
-    "web3-provider-engine": "16.0.3"
+    "web3-provider-engine": "16.0.3",
+    "@snyk/protect": "latest"
   },
   "devDependencies": {
     "@types/bip39": "^2.4.2",
@@ -40,7 +42,7 @@
     "mocha": "9.2.2",
     "ts-node": "^9.0.0",
     "typescript": "^4.1.4",
-    "web3": "1.5.3"
+    "web3": "1.7.5"
   },
   "keywords": [
     "etheruem",
@@ -51,5 +53,6 @@
   ],
   "publishConfig": {
     "access": "public"
-  }
+  },
+  "snyk": true
 }
