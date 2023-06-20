@@ -75,8 +75,8 @@
     "mocha": "9.2.2",
     "node-emoji": "^1.8.1",
     "original-require": "^1.0.1",
-    "sane": "^4.0.2",
-    "semver": "^7.3.4",
+    "sane": "^5.0.0",
+    "semver": "^7.5.2",
     "source-map-support": "^0.5.19",
     "spawn-args": "^0.1.0",
     "tmp": "^0.2.1",
@@ -84,7 +84,7 @@
     "web3": "1.5.3",
     "web3-utils": "1.5.3",
     "xregexp": "^4.2.4",
-    "yargs": "^8.0.2"
+    "yargs": "^10.0.0"
   },
   "devDependencies": {
     "@truffle/blockchain-utils": "^0.1.1",
