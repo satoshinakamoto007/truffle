@@ -22,7 +22,7 @@
   },
   "typings": "./typings/index.d.ts",
   "dependencies": {
-    "@ensdomains/ensjs": "^2.0.1",
+    "@ensdomains/ensjs": "^2.1.0",
     "@truffle/blockchain-utils": "^0.1.1",
     "@truffle/contract-schema": "^3.4.6",
     "@truffle/debug-utils": "^6.0.15",
@@ -31,7 +31,7 @@
     "bignumber.js": "^7.2.1",
     "debug": "^4.3.1",
     "ethers": "^4.0.32",
-    "web3": "1.5.3",
+    "web3": "4.0.1",
     "web3-core-helpers": "1.5.3",
     "web3-core-promievent": "1.5.3",
     "web3-eth-abi": "1.5.3",
