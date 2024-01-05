@@ -28,7 +28,7 @@
   "types": "dist/lib/index.d.ts",
   "dependencies": {
     "@types/ws": "^7.2.0",
-    "axios": "0.26.1",
+    "axios": "1.6.4",
     "delay": "^5.0.0",
     "isomorphic-ws": "^4.0.1",
     "promise.any": "^2.0.2",
