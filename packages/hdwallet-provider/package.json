@@ -28,7 +28,7 @@
     "ethereum-protocol": "^1.0.1",
     "ethereumjs-util": "^6.1.0",
     "ethereumjs-wallet": "^1.0.1",
-    "web3-provider-engine": "16.0.3"
+    "web3-provider-engine": "16.0.7"
   },
   "devDependencies": {
     "@types/bip39": "^2.4.2",
