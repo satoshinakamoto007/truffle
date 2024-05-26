@@ -23,7 +23,7 @@
     "@truffle/contract-schema": "^3.4.6",
     "@truffle/expect": "^0.1.0",
     "debug": "^4.3.1",
-    "glob": "^7.1.6",
+    "glob": "^9.0.0",
     "web3-utils": "1.5.3"
   },
   "devDependencies": {
