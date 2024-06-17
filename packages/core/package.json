@@ -43,7 +43,7 @@
     "@truffle/preserve": "^0.2.7",
     "@truffle/preserve-fs": "^0.2.7",
     "@truffle/preserve-to-buckets": "^0.2.8",
-    "@truffle/preserve-to-filecoin": "^0.2.8",
+    "@truffle/preserve-to-filecoin": "^0.2.10",
     "@truffle/preserve-to-ipfs": "^0.2.8",
     "@truffle/provider": "^0.2.50",
     "@truffle/provisioner": "^0.2.47",
@@ -81,7 +81,7 @@
     "spawn-args": "^0.1.0",
     "tmp": "^0.2.1",
     "universal-analytics": "^0.4.17",
-    "web3": "1.5.3",
+    "web3": "4.0.1",
     "web3-utils": "1.5.3",
     "xregexp": "^4.2.4",
     "yargs": "^8.0.2"
