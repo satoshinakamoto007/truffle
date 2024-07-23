@@ -19,13 +19,15 @@
   },
   "scripts": {
     "build": "sh ./scripts/generate-declarations",
-    "prepare": "yarn run build",
-    "test": "mocha"
+    "prepare": "yarn run snyk-protect && yarn run build",
+    "test": "mocha",
+    "snyk-protect": "snyk-protect"
   },
   "typings": "./typings/index.d.ts",
   "dependencies": {
     "ajv": "^6.10.0",
-    "debug": "^4.3.1"
+    "debug": "^4.3.1",
+    "@snyk/protect": "latest"
   },
   "devDependencies": {
     "json-schema-to-typescript": "^5.5.0",
@@ -41,5 +43,6 @@
   ],
   "publishConfig": {
     "access": "public"
-  }
+  },
+  "snyk": true
 }
