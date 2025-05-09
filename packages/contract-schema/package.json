@@ -28,7 +28,7 @@
     "debug": "^4.3.1"
   },
   "devDependencies": {
-    "json-schema-to-typescript": "^5.5.0",
+    "json-schema-to-typescript": "^14.1.0",
     "mocha": "9.2.2",
     "solc": "0.8.13"
   },
