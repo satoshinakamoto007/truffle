@@ -80,8 +80,8 @@
     "source-map-support": "^0.5.19",
     "spawn-args": "^0.1.0",
     "tmp": "^0.2.1",
-    "universal-analytics": "^0.4.17",
-    "web3": "1.5.3",
+    "universal-analytics": "^0.4.21",
+    "web3": "4.0.1",
     "web3-utils": "1.5.3",
     "xregexp": "^4.2.4",
     "yargs": "^8.0.2"
